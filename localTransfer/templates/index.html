@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>localTransfer by David Krammer</title>
+</head>
+
+<body>
+    <h1>Here are your files:</h1>
+    <h2 id="message">{{.message}}</h2>
+
+    <form action="/ack" method="POST">
+        <button type="submit" name="action" value="ackButton" id="copyButton">Copy to Clipboard (And close Connection)</button>
+    </form>
+</body>
+
+<script>
+    function copyH2Text(elementId) {
+        const h2 = document.getElementById(elementId);
+        if (!h2) return;
+
+        const text = h2.textContent;
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text)
+                .then(() => alert('Text copied to clipboard! Your connection will now be closed.'))
+                .catch(err => console.error('Failed:', err));
+        } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Text copied to clipboard!');
+        }
+    }   
+
+    document.getElementById('copyButton').addEventListener('click', function () {
+        copyH2Text('message');
+    });
+
+</script>
+
+</html>
